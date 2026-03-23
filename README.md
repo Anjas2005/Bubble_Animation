@@ -1,48 +1,60 @@
 <img width="1289" height="806" alt="image" src="https://github.com/user-attachments/assets/f93bcd8d-34a2-47c6-adc9-c1f70f049b69" />
 A colorful, high-performance 2D physics simulation of bouncing bubbles, built purely in C using [Raylib](https://www.raylib.com/). 
 
-🎮 **[Play the Live Web Version Here](https://Anjas2005.github.io/Bubble_Animation/)**
+# 🎮 Play the Game
+
+**https://Anjas2005.github.io/Bubble_Animation/**
+
+---
 
 ## ✨ Features
-* **Procedural Generation:** Spawns multiple bubbles with randomized sizes, colors, and initial velocities.
-* **2D Physics:** Smooth, perfectly elastic screen-boundary collisions.
-* **Cross-Platform:** Compiles natively for Desktop (Windows/Linux/macOS) and the Web (WebAssembly).
 
-## 🌐 WebAssembly Build Instructions
-To compile this project for the browser, you need the Emscripten SDK (`emsdk`) and the Raylib WebAssembly library.
+* Procedural generation of bubbles (random size, color, velocity)
+* 2D physics with elastic boundary collisions
+* Cross-platform: Desktop + WebAssembly
 
-# Compile using Emscripten with the minimal HTML shell
-emcc -o index.html src/main.c -Os -Wall ./raylib_web/lib/libraylib.a -I./raylib_web/include -I./include -s USE_GLFW=3 -s ASYNCIFY -DPLATFORM_WEB --shell-file minshell.html
-💻 Local Desktop Build Instructions
-This project is structured using the Raylib-Quickstart template. Ensure you have a C compiler (GCC/MinGW) installed.
+---
 
-Windows (Using MinGW-W64)
-Double click the build-MinGW-W64.bat file to generate the required build files.
+## 🌐 WebAssembly Build
 
-Open your terminal (use W64devkit if you don't have GCC in your global path) in the project folder.
+Requires: `emsdk` + raylib web build
 
-Run make.
+```bash
+emcc -o index.html src/main.c -Os -Wall \
+./raylib_web/lib/libraylib.a \
+-I./raylib_web/include -I./include \
+-s USE_GLFW=3 -s ASYNCIFY -DPLATFORM_WEB \
+--shell-file minshell.html
+```
 
-Run the executable located in ./bin/Debug/.
+---
 
-Linux
-Open a terminal in the project root.
+## 💻 Desktop Build
 
-Run make.
+### Linux
 
-Run the executable located in ./bin/Debug/.
-(Note: If the Makefile isn't generated, run cd build && ./premake5 gmake && cd .. first).
+```bash
+make
+./game
+```
 
-MacOS
-Open a terminal and cd into the build folder.
+### Windows (MinGW)
 
-Run ./premake5.osx gmake.
+```bash
+make
+./game.exe
+```
 
-cd back to the root directory.
+### macOS
 
-Run make.
+```bash
+make
+./game
+```
 
-📜 Credits & License
-Simulation logic and WebAssembly configuration by Anjas2005.
+---
 
-Built on top of the Raylib-Quickstart template by Jeffery Myers (Licensed under CC0 1.0).
+## 📜 Credits
+
+* Simulation + WebAssembly setup: Anjas2005
+* Based on Raylib Quickstart template (CC0 1.0)
