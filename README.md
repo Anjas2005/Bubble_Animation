@@ -11,7 +11,6 @@ A colorful, high-performance 2D physics simulation of bouncing bubbles, built pu
 ## 🌐 WebAssembly Build Instructions
 To compile this project for the browser, you need the Emscripten SDK (`emsdk`) and the Raylib WebAssembly library.
 
-```bash
 # Compile using Emscripten with the minimal HTML shell
 emcc -o index.html src/main.c -Os -Wall ./raylib_web/lib/libraylib.a -I./raylib_web/include -I./include -s USE_GLFW=3 -s ASYNCIFY -DPLATFORM_WEB --shell-file minshell.html
 💻 Local Desktop Build Instructions
