@@ -1,54 +1,94 @@
-/*
-Raylib example file.
-This is an example main file for a simple raylib project.
-Use this as a starting point or replace it with your code.
-
-by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit https://creativecommons.org/publicdomain/zero/1.0/
-
-*/
-
 #include "raylib.h"
+#include "resource_dir.h"
 
-#include "resource_dir.h"	// utility header for SearchAndSetResourceDir
+// Define the number of balls i want on screen
+#define MAX_BALLS 20
 
-int main ()
-{
-	// Tell the window to use vsync and work on high DPI displays
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+// 1.Create a "BluePrint" for what makes a Ball
+typedef struct Ball {
+  int x, y;
+  int speedX, speedY;
+  int radius;
+  Color color;
+} Ball;
 
-	// Create the window and OpenGL context
-	InitWindow(1280, 800, "Hello Raylib");
+int main() {
+  SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
-	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
-	SearchAndSetResourceDir("resources");
+  int screenWidth = 1280;
+  int screenHeight = 800;
 
-	// Load a texture from the resources directory
-	Texture wabbit = LoadTexture("wabbit_alpha.png");
-	
-	// game loop
-	while (!WindowShouldClose())		// run the loop until the user presses ESCAPE or presses the Close button on the window
-	{
-		// drawing
-		BeginDrawing();
+  // Create the Window
+  InitWindow(screenWidth, screenHeight, "Multiple Bouncing Balls");
 
-		// Setup the back buffer for drawing (clear color and depth buffers)
-		ClearBackground(BLACK);
+  SearchAndSetResourceDir("resources");
 
-		// draw some text using the default font
-		DrawText("Hello Raylib", 200,200,20,WHITE);
+  // 2. Create an Array to hold all our Balls
+  Ball balls[MAX_BALLS];
 
-		// draw our texture to the screen
-		DrawTexture(wabbit, 400, 200, WHITE);
-		
-		// end the frame and get ready for the next one  (display frame, poll input, etc...)
-		EndDrawing();
-	}
+  // Array of colors to pick from randomly
+  Color colors[5] = {RED, ORANGE, PURPLE, GREEN, DARKBLUE};
+  // 3. Initialize every ball with random starting values
+  for (int i = 0; i < MAX_BALLS; i++) {
+    balls[i].radius = GetRandomValue(20, 50);
 
-	// cleanup
-	// unload our texture so it can be cleaned up
-	UnloadTexture(wabbit);
+    // Spawn them randomly inside the screen limits
+    balls[i].x = GetRandomValue(balls[i].radius, screenWidth - balls[i].radius);
+    balls[i].y =
+        GetRandomValue(balls[i].radius, screenHeight - balls[i].radius);
 
-	// destroy the window and cleanup the OpenGL context
-	CloseWindow();
-	return 0;
+    // Random speed between 3 and 8
+    balls[i].speedX = GetRandomValue(3, 8);
+    balls[i].speedY = GetRandomValue(3, 8);
+
+    // 50% chance to flip direction so they don't all go the same way
+    if (GetRandomValue(0, 1) == 1) balls[i].speedX *= -1;
+    if (GetRandomValue(0, 1) == 1) balls[i].speedY *= -1;
+
+    // Assign a color from our array based on the index
+    balls[i].color = colors[i % 5];
+  }
+
+  // game loop
+  while (!WindowShouldClose()) {
+    // ==========================================
+    // UPDATE: Physics & Logic
+    // ==========================================
+
+    // Loop through every single ball and apply physics
+    for (int i = 0; i < MAX_BALLS; i++) {
+      // Move the ball
+      balls[i].x += balls[i].speedX;
+      balls[i].y += balls[i].speedY;
+
+      // Bounce of Walls
+      if ((balls[i].x + balls[i].radius >= screenWidth) ||
+          (balls[i].x - balls[i].radius <= 0)) {
+        balls[i].speedX *= -1;
+      }
+      if ((balls[i].y + balls[i].radius >= screenHeight) ||
+          (balls[i].y - balls[i].radius <= 0)) {
+        balls[i].speedY *= -1;
+      }
+    }
+
+    // ==========================================
+    // DRAW: Rendering
+    // ==========================================
+    BeginDrawing();
+    ClearBackground(SKYBLUE);
+
+    // Loop thorugh every ball and draw it to the screen
+    for (int i = 0; i < MAX_BALLS; i++) {
+      DrawCircle(balls[i].x, balls[i].y, balls[i].radius, balls[i].color);
+    }
+
+    DrawText("Look at them go!", 20, 20, 20, WHITE);
+
+    EndDrawing();
+  }
+
+  // CleanUP
+  CloseWindow();
+  return 0;
 }
